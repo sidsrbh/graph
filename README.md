@@ -118,10 +118,10 @@ func main() {
 
 ## **License**
 
-MIT License (or your choice)
+MIT License
 
 ````
-
+```
 ---
 
 ## **Example main.go**
@@ -184,3 +184,129 @@ func main() {
 4. You should see the graph nodes, edges, traversals, and cycle detection outputs!
 
 ---
+
+```
+## Weighted Graphs
+
+Your package also supports **weighted graphs**—for both adjacency list and adjacency matrix representations, in directed or undirected forms, with all core and traversal functions as for unweighted graphs.
+
+### **When to Use**
+
+Use `WeightedGraph` when your edges have associated weights (distances, costs, capacities, etc.), as in road networks, routing, flow, or shortest path problems.
+
+---
+
+### **Creating a Weighted Graph**
+
+```go
+// Undirected Weighted Graph (Adjacency List)
+wg := graph.NewWeightedGraph[string](graph.Undirected, graph.AdjacencyList)
+
+// Add weighted edges
+wg.AddEdge("A", "B", 4)
+wg.AddEdge("A", "C", 2)
+wg.AddEdge("B", "C", 5)
+wg.AddEdge("B", "D", 10)
+wg.AddEdge("C", "D", 3)
+
+fmt.Println("Nodes:", wg.Nodes())
+fmt.Println("Edges:", wg.Edges()) // WeightedEdge{Edge: [2]string, Weight: int}
+
+// Traversal works the same way
+fmt.Println("BFS from A:", wg.BFS("A"))
+fmt.Println("DFSIterative from A:", wg.DFSIterative("A"))
+```
+
+#### **Directed Weighted Graph (Adjacency Matrix) Example**
+
+```go
+// Directed Weighted Graph with integers
+wdg := graph.NewWeightedGraph[int](graph.Directed, graph.AdjacencyMatrix)
+wdg.AddEdge(1, 2, 7)
+wdg.AddEdge(2, 3, 1)
+wdg.AddEdge(3, 1, 2)
+
+fmt.Println("Nodes:", wdg.Nodes())
+fmt.Println("Edges:", wdg.Edges()) // WeightedEdge{Edge: [2]int, Weight: int}
+fmt.Println("Cycle present?:", wdg.HasCycleDirected())
+```
+
+---
+
+### **WeightedGraph API**
+
+All APIs parallel the unweighted version, but with weights:
+
+* `AddEdge(from, to T, weight int)` — add a weighted edge
+* `RemoveEdge(from, to T)`
+* `HasEdge(from, to T) bool`
+* `Neighbours(node T) []T`
+* `Edges() []WeightedEdge[T]` — returns slice of `{Edge: [2]T, Weight: int}`
+* `Nodes() []T`
+* `OutDegree(node T) int`
+* `InDegree(node T) int`
+* `BFS(start T) []T`, `DFSRecursive(start T) []T`, `DFSIterative(start T) []T`
+* Pathfinding and cycle detection as before
+
+#### **WeightedEdge Type**
+
+```go
+type WeightedEdge[T comparable] struct {
+    Edge   [2]T  // from, to
+    Weight int   // weight of the edge
+}
+```
+
+---
+
+### **Example: WeightedGraph with Shortest Path (Coming Soon)**
+
+*Build Dijkstra’s, Bellman-Ford, Floyd-Warshall etc. on top of this interface!*
+
+```go
+// Use Edges() for custom algorithms (e.g. Dijkstra, Floyd-Warshall)
+for _, edge := range wg.Edges() {
+    fmt.Printf("Edge %v -> %v, weight=%d\n", edge.Edge[0], edge.Edge[1], edge.Weight)
+}
+```
+
+---
+
+### **Switching Between List and Matrix**
+
+Just change the constructor’s `repType` argument. Everything else remains identical:
+
+```go
+// Adjacency Matrix version
+wg := graph.NewWeightedGraph[string](graph.Undirected, graph.AdjacencyMatrix)
+```
+
+---
+
+### **Quick Reference Table**
+
+| Feature                            | Unweighted Graph | WeightedGraph  |
+| ---------------------------------- | ---------------- | -------------- |
+| Add/Remove nodes                   | ✅                | ✅              |
+| Add/Remove edges                   | ✅                | ✅              |
+| Edge weights                       | ❌                | ✅              |
+| Directed/Undirected                | ✅                | ✅              |
+| Adjacency List/Matrix              | ✅                | ✅              |
+| Traversals (BFS/DFS)               | ✅                | ✅              |
+| Degree, neighbors, edges           | ✅                | ✅              |
+| Cycle detection                    | ✅                | ✅              |
+| Custom algorithms (Dijkstra, etc.) | (not built-in)   | (not built-in) |
+
+---
+
+### **Summary**
+
+* Use `Graph[T]` for simple (unweighted) graphs.
+* Use `WeightedGraph[T]` for graphs with edge weights.
+* Both APIs are parallel and easy to swap.
+* Extend with custom algorithms as needed.
+
+---
+
+```
+
