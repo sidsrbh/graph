@@ -184,8 +184,6 @@ func main() {
 4. You should see the graph nodes, edges, traversals, and cycle detection outputs!
 
 ---
-
-```
 ## Weighted Graphs
 
 Your package also supports **weighted graphs**—for both adjacency list and adjacency matrix representations, in directed or undirected forms, with all core and traversal functions as for unweighted graphs.
@@ -307,6 +305,4 @@ wg := graph.NewWeightedGraph[string](graph.Undirected, graph.AdjacencyMatrix)
 * Extend with custom algorithms as needed.
 
 ---
-
-```
 
